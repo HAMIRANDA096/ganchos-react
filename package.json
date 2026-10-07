@@ -1,0 +1,12 @@
+{
+  "name": "ganchos",
+  "version": "1.0.0",
+  "description": "reto react- academia x",
+  "license": "ISC",
+  "author": "ARMANDO MIRANDA",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
