@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto lista de usuarios - Ganchos React</title>
+    <!-- React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <!-- ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .titulo {
+            text-align: center;
+            color: #1d72b8;
+            margin-bottom: 30px;
+        }
+
+        .contenedor-tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tarjeta {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .tarjeta h3 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+
+        .tarjeta p {
+            margin: 0;
+            color: #718096;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor React -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // 1. Gancho personalizado (Custom Hook) para obtener datos de la API
+        function useFetchUsuarios(url) {
+            const [usuarios, setUsuarios] = useState([]);
+            const [cargando, setCargando] = useState(true);
+
+            useEffect(() => {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        setUsuarios(data);
+                        setCargando(false);
+                    })
+                    .catch(error => {
+                        console.error("Error al cargar los usuarios:", error);
+                        setCargando(false);
+                    });
+            }, [url]);
+
+            return { usuarios, cargando };
+        }
+
+        // 2. Componente Tarjeta
+        function Tarjeta({ usuario }) {
+            return (
+                <div className="tarjeta">
+                    <h3>{usuario.name}</h3>
+                    <p>{usuario.company.bs}</p>
+                </div>
+            );
+        }
+
+        // 3. Componente Principal
+        function App() {
+            const { usuarios, cargando } = useFetchUsuarios("https://jsonplaceholder.typicode.com/users");
+
+            return (
+                <div>
+                    <h1 className="titulo">Lista de Usuarios</h1>
+                    {cargando ? (
+                        <p style={{ textAlign: "center" }}>Cargando usuarios...</p>
+                    ) : (
+                        <div className="contenedor-tarjetas">
+                            {usuarios.map(usuario => (
+                                <Tarjeta key={usuario.id} usuario={usuario} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Montar la aplicación en el DOM
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+    <footer>
+        <p style="text-align: center; margin-top: 40px; color: #718096;">&copy; 2026 Reto Lista de Usuarios</p>
+    </footer>
+</body>
+</html>
